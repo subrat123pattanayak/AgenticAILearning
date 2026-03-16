@@ -20,14 +20,14 @@ for msg in st.session_state.messages:
     with st.chat_message(msg['role']): # Automatically display different emojis for user and assistant messages
         st.markdown(msg['content'])
 
-if user_query := st.chat_input('Message the AI....')
+if user_query := st.chat_input('Message the AI....'):
 
     if not user_api_key:
         st.error("Please enter your API Key in the sidebar first!")
 
     else:
         st.session_state.messages.append({'role':'user', 'content':user_query})
-        with st.chat_messages('user'):
+        with st.chat_message('user'):
             st.markdown(user_query)
 
         llm = ChatGroq(
@@ -36,10 +36,10 @@ if user_query := st.chat_input('Message the AI....')
             api_key = user_api_key
         )
 
-        with st.spinner('AI is thinking...')
-        response = llm.invoke(st.session_state.messages)
-        bot_answer = response.content
+        with st.spinner('AI is thinking...'):
+            response = llm.invoke(st.session_state.messages)
+            bot_answer = response.content
 
-    st.session_stat.messages_append({'role':'assistant', 'content':bot_answer})
-    with st.chat_messages('assistant'):
-        st.markdown(bot_answer)
+        st.session_state.messages.append({'role':'assistant', 'content':bot_answer})
+        with st.chat_message('assistant'):
+            st.markdown(bot_answer)
